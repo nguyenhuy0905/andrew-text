@@ -20,7 +20,7 @@ See the [contributing](CONTRIBUTING.md) document.
 - [x] Regression testing with GitHub Actions.
 - [ ] CI/CD.
 - [x] Doxygen.
-- [ ] Coverage. For now, manual use of gcovr and genhtml needed.
+- [x] Coverage.
 - [ ] Install.
 - [ ] CPack.
 - [x] Licensing.
