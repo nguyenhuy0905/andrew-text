@@ -19,7 +19,7 @@ Read [CODE\_OF\_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ### Before you move on
 
-- We use C++23. Make sure your compiler supports it.
+- C++20. Make sure your compiler supports it.
 - clang-tidy should catch a bunch of this already.
 - So, follow what clang-tidy shouts to your face.
 - Similarly for codespell and all those good stuff.
@@ -34,12 +34,20 @@ now, `clangd` is the most consistent one.
 
 - Indent with 2 spaces. No tab.
   - If you have `clang-format`, it's gonna help you.
-- Use snake case for function names, camel case for struct/class/enum names.
+
+#### Naming
+
+- Use snake case for function names and parameters, camel case for struct/class
+names.
+- Use camel case for enum constants.
+- Use snake case for function name.
+- Use upper case for any `constexpr` identifier.
+- Use camel case for templates/concepts.
 - Use trailing return type for functions.
-- Use `assert` as a way to specify runtime contracts/invariants.
-- Use `static_assert` for compile-time checking.
-- If you think the function needs documentation, use
-[Doxygen-style documentation](https://www.doxygen.nl/manual/docblocks.html).
+- Use snake case for class members, upper case for constexpr/constant class invariants.
+  - Prefix non-public class members with `m_`
+- Prefix function parameters with `t_`, prefix pointer function parameters with
+`t_p_`.
 - Some examples:
 
 ```cpp
@@ -51,45 +59,36 @@ namespace random_stuff {
 * @return The sum of a and b.
 * This is just an example function.
 */
-auto this_is_a_func(int a, int b) -> int {
-  assert(a != b);
-  return a + b;
+auto this_is_a_func(int t_a, int t_b) -> int {
+  assert(t_a != t_b);
+  return t_a + t_b;
 }
 
 /**
 * @class SomeStruct
 * @brief Just a struct.
 */
+template <std::size_t SomeNum>
 struct SomeStruct {
+  constexpr int SOME_NUM = SomeNum;
   explicit SomeStruct();
   SomeStruct(const SomeStruct&);
   SomeStruct(SomeStruct&&);
   auto operator=(const SomeStruct&) -> SomeStruct&;
   auto operator=(SomeStruct&&) -> SomeStruct&;
   virtual ~SomeStruct();
+private:
+  int m_num;
 };
 
 /**
 * @class SomeChildStruct
 * @brief Just a child struct of @ref SomeStruct.
 */
-struct SomeChildStruct : SomeStruct {
+struct SomeChildStruct : public SomeStruct {
   ~SomeChildStruct() override;
 };
 } // namespace random_stuff
-```
-
-- Name class/struct members with a preceding `m_`, function parameters with a
-preceding `t_`. `public` declarations before `private` ones, most of the time:
-
-```cpp
-class SomeClass {
-public:
-  explicit SomeClass(std::unique_ptr<std::iostream> t_stream)
-    : m_stream(std::move(t_stream)) {}
-private:
-  std::unique_ptr<std::iostream> m_stream;
-};
 ```
 
 ### File names
@@ -113,7 +112,14 @@ follow your judgement for this.
   cross-platform counterpart.
   - If you must, try find and use an external library.
 - Manage packages with `conanfile.py`.
-- Prefer ranges over raw loops, save for `iota`.
+- Use `assert` as a way to specify runtime contracts/invariants.
+- Use `static_assert` for compile-time checking.
+- If you think the function needs documentation, use
+[Doxygen-style documentation](https://www.doxygen.nl/manual/docblocks.html).
+- Prefer ranges over raw loops, maybe except for `iota`.
+  - One-off error is a bitch. Ranges help with that.
+  - May also use `range-v3` instead, which has some features that `std::ranges`
+  doesn't in C++20.
   - Sometimes it looks uglier though, like the example below:
 
 ```cpp
@@ -163,7 +169,10 @@ for(const auto data : arr | std::views::enumerate |
 
 - Prefer sum types over exceptions to return optional or error values.
   - If the project's C++ version goes down to C++20, `std::expected` isn't
-  available. In that case, use `std::variant` in its place.
+  available. In that case, use `tl::expected` by adding `tl-expected` as
+  build requirement in the conanfile.
+  - Similarly with `std::optional`, if you want the monadic operation.
+  `tl::optional` from `tl-optional`.
 
 ```cpp
 
@@ -205,7 +214,7 @@ using Result = std::conditional_t<std::is_same_v<T, void>,
 // Then you can chain a bunch of std::visit.
 ```
 
-- Limit the use of templated class or function.
+- Limit the use of templated class or function. Unless it's actually nice.
 
 ```cpp
 // here are some cases where you should
