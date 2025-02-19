@@ -8,5 +8,5 @@ add_custom_target(coverage
   COMMAND gcovr
   -r ${PROJECT_SOURCE_DIR}
   --html ${PROJECT_BINARY_DIR}/docs/coverage.html
-  --gcov-executable ${GCOV_EXE} 
+  --gcov-executable ${GCOV_EXE}
 )
