@@ -12,4 +12,11 @@ namespace lib {
  * This function returns The Truth.
  */
 auto return_true() -> bool;
+
+class TestClass {
+  static const int NUM = 1;
+
+protected:
+  int m_num;
+};
 } // namespace lib
