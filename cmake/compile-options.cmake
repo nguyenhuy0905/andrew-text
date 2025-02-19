@@ -105,12 +105,6 @@ if(adrtxt_COV)
     target_compile_options(adrtxt_compile_options INTERFACE --coverage)
     target_link_options(adrtxt_compile_options INTERFACE --coverage)
     target_link_libraries(adrtxt_compile_options INTERFACE gcov)
-    add_custom_target(coverage
-      COMMENT "Generate coverage info. Run the executable first"
-      COMMAND gcovr -r ${PROJECT_SOURCE_DIR}
-        ${PROJECT_BINARY_DIR} --html
-        ${PROJECT_BINARY_DIR}/docs/cov.html
-      WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-    )
+    include(cmake/coverage.cmake)
   endif()
 endif()
