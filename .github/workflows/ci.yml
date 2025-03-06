@@ -41,20 +41,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conan-${{ matrix.build_type }}-
 
-      - name: Specify compiler name (GCC)
-        id: cc
-        shell: bash
-        if: ${{ contains(matrix.compiler, 'gcc') }}
-        run: |
-          echo "compiler-id=gcc" >> "$GITHUB_OUTPUT"
-
-      - name: Specify compiler name (Clang)
-        id: cc
-        shell: bash
-        if: ${{ contains(matrix.compiler, 'llvm') }}
-        run: |
-          echo "compiler-id=clang" >> "$GITHUB_OUTPUT"
-
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
         with:
@@ -67,10 +53,20 @@ jobs:
       - name: Setup conan profile
         run: conan profile detect -f
 
-      - name: Conan install
+      - name: Conan install (GCC)
+        if: ${{ contains(matrix.compiler, 'gcc') }}
         run: >
           conan install . -s build_type=${{ matrix.build_type }}
-          -s compiler=${{ steps.cc.outputs.compiler-id }}
+          -s compiler=gcc
+          -s compiler.cppstd=20
+          -c tools.cmake.cmaketoolchain:generator=Ninja
+          -b missing
+
+      - name: Conan install (Clang)
+        if: ${{ contains(matrix.compiler, 'llvm') }}
+        run: >
+          conan install . -s build_type=${{ matrix.build_type }}
+          -s compiler=clang
           -s compiler.cppstd=20
           -c tools.cmake.cmaketoolchain:generator=Ninja
           -b missing
