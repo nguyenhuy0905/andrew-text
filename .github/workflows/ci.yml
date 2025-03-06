@@ -16,25 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-24.04, macos-15, windows-2022 ]
-        compiler: [ gcc-14, llvm-18, apple-clang, msvc ]
+        compiler: [ gcc-14, llvm-18 ]
         build_type: [ Debug, RelWithDebInfo ]
-        exclude:
-          - os: 'windows-2022'
-            compiler: gcc-14
-          - os: 'windows-2022'
-            compiler: llvm-18
-          - os: 'windows-2022'
-            compiler: apple-clang
-          - os: 'ubuntu-24.04'
-            compiler: msvc
-          - os: 'ubuntu-24.04'
-            compiler: apple-clang
-          - os: 'macos-15'
-            compiler: msvc
-          - os: 'macos-15'
-            compiler: llvm-18
-          - os: 'macos-15'
-            compiler: gcc-14
 
     steps:
       - uses: actions/checkout@v4
@@ -62,9 +45,9 @@ jobs:
         uses: aminya/setup-cpp@v1
         with:
           compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows') }}
           cmake: true
           conan: true
+          ninja: true
 
       - name: Setup conan profile
         run: conan profile detect -f
@@ -73,27 +56,18 @@ jobs:
         run: >
           conan install . -s build_type=${{ matrix.build_type }}
           -s compiler.cppstd=20
+          -c tools.cmake.cmaketoolchain=Ninja
           -b missing
 
-      - name: CMake setup (Debug, Unix)
-        if: ${{ matrix.build_type == 'Debug' && runner.os != 'Windows' }}
+      - name: CMake setup (Debug)
+        if: ${{ matrix.build_type == 'Debug' }}
         run: |
           cmake --preset=dev-ci-unix
 
-      - name: CMake setup (RelWithDebInfo, Unix)
-        if: ${{ matrix.build_type == 'RelWithDebInfo' && runner.os != 'Windows' }}
+      - name: CMake setup (RelWithDebInfo)
+        if: ${{ matrix.build_type == 'RelWithDebInfo' }}
         run: |
           cmake --preset=release-ci-unix
-
-      - name: CMake setup (Debug, Windows)
-        if: ${{ matrix.build_type == 'Debug' && runner.os == 'Windows' }}
-        run: |
-          cmake --preset=dev-ci-msvc
-
-      - name: CMake setup (RelWithDebInfo, Windows)
-        if: ${{ matrix.build_type == 'RelWithDebInfo' && runner.os == 'Windows' }}
-        run: |
-          cmake --preset=release-ci-msvc
 
       - name: Build
         run: |
