@@ -4,8 +4,10 @@ Checks:          "*,\
                   -altera-*,\
                   -fuchsia-*,\
                   -llvm*,\
-                  -cppcoreguidelines-non-private-member-variables-in-classes,\
-                  -misc-non-private-member-variables-in-classes"
+                  -modernize-*,\
+                  -hicpp-*,\
+                  -cppcoreguidelines-*
+                  "
 WarningsAsErrors: ''
 HeaderFileExtensions:
   - ''

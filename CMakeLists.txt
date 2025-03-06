@@ -12,7 +12,7 @@ project(adrtxt
     VERSION 0.1.0
     HOMEPAGE_URL "https://example.com"
     DESCRIPTION "Another CMake adrtxt"
-    LANGUAGES CXX)
+    LANGUAGES C CXX)
 
 if(NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 20)
@@ -30,13 +30,13 @@ include(cmake/folders.cmake)
 # target_sources inside the src/ directory
 
 if(NOT adrtxt_MODULE)
-  add_library(adrtxt_lib)
-  target_include_directories(adrtxt_lib ${WARNING_GUARD}
+  add_executable(adrtxt)
+  target_include_directories(adrtxt ${WARNING_GUARD}
     PUBLIC
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
   )
-  add_library(adrtxt::adrtxt ALIAS adrtxt_lib)
+  # add_library(adrtxt::adrtxt ALIAS adrtxt_lib)
 endif()
 
 include(CMakeDependentOption)

@@ -19,7 +19,7 @@ if(adrtxt_WARNINGS)
       INTERFACE
       -Wall -Wpedantic -Werror -Wextra -Wconversion -Wshadow -Wunused
       -Wsign-conversion -Wcast-qual -Wformat=2 -Wundef -Wnull-dereference
-      -Wimplicit-fallthrough -Wnon-virtual-dtor -Wold-style-cast)
+      -Wimplicit-fallthrough)
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(adrtxt_compile_options
       INTERFACE
@@ -98,36 +98,8 @@ if(adrtxt_PCH)
   target_precompile_headers(adrtxt_compile_options
     INTERFACE
     # add some more here, if you need!
-    <iostream> <memory> <print>
+    <stdio.h> <assert.h> <stddef.h>
   )
-endif()
-
-# ---- modules ----
-
-cmake_dependent_option(adrtxt_MODULE "Whether to build using modules" OFF
-  "CMAKE_VERSION VERSION_GREATER_EQUAL 3.28;
-  CMAKE_CXX_STANDARD GREATER_EQUAL 20;
-  CMAKE_GENERATOR STREQUAL Ninja OR
-  CMAKE_GENERATOR MATCHES \"Visual Studio\"" OFF
-)
-cmake_dependent_option(adrtxt_IMPORT_STD "Whether to use import std" OFF
-  "CMAKE_CXX_STANDARD GREATER_EQUAL 23;adrtxt_MODULE" OFF
-)
-if(adrtxt_MODULE)
-  include(GenerateExportHeader)
-  target_compile_definitions(adrtxt_compile_options INTERFACE ADRTXT_MODULE)
-  add_library(adrtxt_lib_module)
-  generate_export_header(adrtxt_lib_module
-    BASE_NAME adrtxt
-    EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/adrtxt_export.h
-  )
-  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    # otherwise, nasty GCC module bug.
-    # to be honest, even doing the other way doesn't fix it.
-  endif()
-  if(adrtxt_IMPORT_STD)
-    target_compile_definitions(adrtxt_compile_options INTERFACE ADRTXT_IMPORT_STD)
-  endif()
 endif()
 
 # ---- coverage ----

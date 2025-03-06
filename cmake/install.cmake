@@ -1,11 +1,7 @@
 if(CMAKE_SKIP_INSTALL_RULES)
   return()
 endif()
-if(adrtxt_MODULE)
-  set(adrtxt_INSTALLS adrtxt_lib_module adrtxt_compile_options)
-else()
-  set(adrtxt_INSTALLS adrtxt_lib adrtxt_compile_options)
-endif()
+set(adrtxt_INSTALLS adrtxt adrtxt_no_main adrtxt_compile_options)
 include(GNUInstallDirs)
 install(TARGETS ${adrtxt_INSTALLS}
   EXPORT adrtxtTargets
