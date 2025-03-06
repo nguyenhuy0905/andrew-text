@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-24.04, macos-15, windows-2022 ]
-        compiler: [ gcc, llvm ]
+        compiler: [ gcc-14, llvm-18 ]
         build_type: [ Debug, RelWithDebInfo ]
 
     steps:
@@ -41,6 +41,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conan-${{ matrix.build_type }}-
 
+      - name: Specify compiler name (GCC)
+        id: compiler-id
+        shell: bash
+        if: ${{ contains(matrix.compiler, 'gcc') }}
+        run: |
+          echo "compiler-id=gcc" >> "$GITHUB_OUTPUT"
+
+      - name: Specify compiler name (Clang)
+        id: compiler-id
+        shell: bash
+        if: ${{ contains(matrix.compiler, 'llvm') }}
+        run: |
+          echo "compiler-id=clang" >> "$GITHUB_OUTPUT"
+
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
         with:
@@ -56,7 +70,7 @@ jobs:
       - name: Conan install
         run: >
           conan install . -s build_type=${{ matrix.build_type }}
-          -s compiler=${{ matrix.compiler }}
+          -s compiler=${{ steps.compiler-id.compiler-id }}
           -s compiler.cppstd=20
           -c tools.cmake.cmaketoolchain:generator=Ninja
           -b missing
