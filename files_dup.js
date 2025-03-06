@@ -1,4 +1,4 @@
 var files_dup =
 [
-    [ "lib.hpp", "lib_8hpp.html", null ]
+    [ "cli.h", "cli_8h_source.html", null ]
 ];
