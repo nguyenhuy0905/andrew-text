@@ -42,7 +42,7 @@ jobs:
             ${{ runner.os }}-conan-${{ matrix.build_type }}-
 
       - name: Specify compiler name (GCC)
-        id: compiler-id
+        id: cc
         shell: bash
         if: ${{ contains(matrix.compiler, 'gcc') }}
         run: |
@@ -70,7 +70,7 @@ jobs:
       - name: Conan install
         run: >
           conan install . -s build_type=${{ matrix.build_type }}
-          -s compiler=${{ steps.compiler-id.compiler-id }}
+          -s compiler=${{ steps.cc.compiler-id }}
           -s compiler.cppstd=20
           -c tools.cmake.cmaketoolchain:generator=Ninja
           -b missing
