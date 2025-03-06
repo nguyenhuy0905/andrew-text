@@ -56,7 +56,7 @@ jobs:
         run: >
           conan install . -s build_type=${{ matrix.build_type }}
           -s compiler.cppstd=20
-          -c tools.cmake.cmaketoolchain=Ninja
+          -c tools.cmake.cmaketoolchain:generator=Ninja
           -b missing
 
       - name: CMake setup (Debug)
