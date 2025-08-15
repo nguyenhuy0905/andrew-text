@@ -16,8 +16,10 @@ add_library(adrtxt_no_main OBJECT)
 target_sources(adrtxt_no_main
   PUBLIC FILE_SET HEADERS FILES
   cli.h
+  util.h
   PRIVATE
   cli.c
+  util.c
 )
 
 # endif()
