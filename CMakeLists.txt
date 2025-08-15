@@ -1,4 +1,5 @@
 include(cmake/no-insource.cmake)
+include(GNUInstallDirs)
 cmake_minimum_required(VERSION 3.28.0)
 if(CMAKE_VERSION VERSION_GREATER 3.30 AND adrtxt_IMPORT_STD)
   set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
