@@ -1,12 +1,16 @@
 ---
 Checks:          "*,\
+                  -cppcoreguidelines-*,\
+                  -modernize-*,\
                   -google-*,\
                   -altera-*,\
                   -fuchsia-*,\
                   -llvm*,\
+                  -hicpp-*,\
                   -cppcoreguidelines-non-private-member-variables-in-classes,\
                   -misc-non-private-member-variables-in-classes,\
-                  -misc-const-correctness"
+                  -misc-const-correctness\
+                  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling"
 WarningsAsErrors: ''
 HeaderFileExtensions:
   - ''

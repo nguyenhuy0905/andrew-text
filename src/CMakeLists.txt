@@ -33,6 +33,7 @@ if(BUILD_TESTING)
   target_sources(adrtxt_lib_test
     PRIVATE
     cli.test.cpp
+    util.test.cpp
   )
   target_link_libraries(adrtxt_lib_test
     PRIVATE
