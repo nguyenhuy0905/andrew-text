@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-24.04, macos-15, windows-2022 ]
-        compiler: [ gcc-14, llvm-18 ]
+        compiler: [ gcc-14, llvm-19 ]
         build_type: [ Debug, RelWithDebInfo ]
 
     steps:
