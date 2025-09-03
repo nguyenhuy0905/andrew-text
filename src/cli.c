@@ -13,10 +13,9 @@ enum CliOpt {
 /**
  * @brief argument preceded by `--` or `-`
  */
-struct ArgAst {
-    // `=<something>`. Support for the syntax `--opt=val`
-    struct StrSlice val;
-    enum CliOpt opt;
-};
+struct ArgAst {};
 
-struct CliArg parse_args(int t_argc, char **t_p_argv) {}
+struct CliArg parse_args(int t_argc, char **t_p_argv) {
+    struct CliArg default_args = {.help = false, .version = false};
+    return default_args;
+}
