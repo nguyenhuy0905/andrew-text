@@ -14,7 +14,19 @@ struct CliArg {
     bool version;
 };
 
-struct CliArg parse_args(int t_argc, char **t_p_argv);
+enum ParseArgsError {
+    NO_SUCH_ARG,
+};
+
+struct ParseArgsRet {
+    union {
+        struct CliArg args;
+        enum ParseArgsError err;
+    } retval;
+    bool is_successful;
+};
+
+struct ParseArgsRet parse_args(int t_argc, char **t_p_argv);
 
 #ifdef __cplusplus
 }

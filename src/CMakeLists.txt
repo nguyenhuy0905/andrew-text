@@ -17,9 +17,11 @@ target_sources(adrtxt_no_main
   PUBLIC FILE_SET HEADERS FILES
   cli.h
   util.h
+  logs.h
   PRIVATE
   cli.c
   util.c
+  logs.c
 )
 
 # endif()

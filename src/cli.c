@@ -1,5 +1,6 @@
 #include "cli.h"
 #include "util.h"
+#include <stddef.h>
 #include <stdlib.h>
 
 /**
@@ -11,11 +12,9 @@ enum CliOpt {
 };
 
 /**
- * @brief argument preceded by `--` or `-`
+ * \brief Self-explanatory
  */
-struct ArgAst {};
-
-struct CliArg parse_args(int t_argc, char **t_p_argv) {
+struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
     struct CliArg default_args = {.help = false, .version = false};
-    return default_args;
+    // return default_args;
 }
