@@ -22,6 +22,6 @@
   - [x] help
   - [x] version
     - [x] `configure_file` with CMake to get the version.
-  - [ ] Extract dealing with flags out.
+  - [x] Extract dealing with flags out.
   - [ ] Input file
     - Should be the first non-flag item.

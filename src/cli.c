@@ -16,6 +16,10 @@ enum CliOpt {
 };
 
 static bool match_arg(struct StrSlice, struct StrSliceSpan);
+/**
+ * The slice excludes the first dash
+ */
+static void update_flag(struct CliArg*, struct StrSlice);
 
 /**
  * \brief Self-explanatory.
@@ -46,22 +50,8 @@ struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
 
     // compare each string to a set of flags
     for (struct StrSlice *slice = vec.buf; slice < vec.buf + vec.len; ++slice) {
-        // TODO: move the ones down here to a separate `match_flag` method.
-        if (!args.help &&
-            match_arg(*slice,
-                      (struct StrSliceSpan){
-                          .buf = (struct StrSlice[]){str_slice_new("--help"),
-                                                     str_slice_new("-h")},
-                          .len = 2})) {
-            args.help = true;
-        }
-        if (!args.version &&
-            match_arg(*slice,
-                      (struct StrSliceSpan){
-                          .buf = (struct StrSlice[]){str_slice_new("--version"),
-                                                     str_slice_new("-v")},
-                          .len = 2})) {
-            args.version = true;
+        if(str_slice_cmp(str_slice_subslice(*slice, 0, 1), str_slice_new("-")) == 0) {
+            update_flag(&args, *slice);
         }
     }
 
@@ -71,6 +61,7 @@ struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
 }
 
 enum RunCliStatus run_cli(struct CliArg t_arg) {
+    // help takes precedence over everything else
     if (t_arg.help) {
         // TODO: later on, when we have too many options, refactor this into:
         //   - Each sub-command has its own help section.
@@ -94,6 +85,7 @@ enum RunCliStatus run_cli(struct CliArg t_arg) {
                   "\t(at your option) any later version.\n");
         return ALL_WELL;
     }
+    // then version, also taking precedence over anything else
     if (t_arg.version) {
         debug_log(INFO, EXE_NAME " v" VERSION "\n");
         return ALL_WELL;
@@ -110,4 +102,22 @@ static bool match_arg(struct StrSlice t_slice, struct StrSliceSpan t_args) {
         }
     }
     return false;
+}
+
+static void update_flag(struct CliArg* t_p_args, struct StrSlice t_slice) {
+        if (match_arg(t_slice,
+                      (struct StrSliceSpan){
+                          .buf = (struct StrSlice[]){str_slice_new("-help"),
+                                                     str_slice_new("h")},
+                          .len = 2})) {
+            t_p_args->help = true;
+        }
+        if (match_arg(t_slice,
+                      (struct StrSliceSpan){
+                          .buf = (struct StrSlice[]){str_slice_new("-version"),
+                                                     str_slice_new("v")},
+                          .len = 2})) {
+            t_p_args->version = true;
+        }
+
 }
