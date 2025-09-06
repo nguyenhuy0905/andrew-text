@@ -7,6 +7,8 @@ extern "C" {
 #include <stddef.h>
 #include <string.h>
 
+[[noreturn]] void thread_safe_exit(int retcode);
+
 /**
  * \brief Copium \c{std::string_view}.
  */
@@ -35,6 +37,7 @@ struct StrSlice str_slice_new(const char *t_p_buf);
 struct StrSlice str_slice_subslice(struct StrSlice t_slice, size_t t_start_idx,
                                    size_t t_end_idx);
 int str_slice_cmp(struct StrSlice t_lhs, struct StrSlice t_rhs);
+
 struct StrSliceVec {
     struct StrSlice *buf;
     size_t len;

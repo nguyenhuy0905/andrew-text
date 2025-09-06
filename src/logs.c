@@ -30,14 +30,3 @@ int debug_log(enum DebugLogType type, const char *fmt, ...) {
     mtx_unlock(&print_mtx);
     return ret;
 }
-
-static mtx_t exit_mtx;
-static void thread_safe_exit_init(void) {
-    mtx_init(&exit_mtx, mtx_plain | mtx_recursive);
-}
-[[noreturn]] void thread_safe_exit(int retcode) {
-    static once_flag init_flag = ONCE_FLAG_INIT;
-    call_once(&init_flag, thread_safe_exit_init);
-    mtx_lock(&exit_mtx);
-    exit(retcode);
-}
