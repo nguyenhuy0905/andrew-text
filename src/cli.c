@@ -1,6 +1,8 @@
 #include "cli.h"
+#include "info.h"
 #include "logs.h"
 #include "util.h"
+#include <assert.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -27,7 +29,8 @@ struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
                                      .is_successful = true};
     }
 
-    auto vec_ret = str_slice_vec_new(t_argc - 1);
+    assert(t_argc > 1);
+    auto vec_ret = str_slice_vec_new((size_t)(t_argc - 1));
     if (!vec_ret.has_val) {
         debug_log(ERROR, "At %s:%d: array allocation failed, nuking program\n",
                   __FILE__, __LINE__);
@@ -55,8 +58,8 @@ struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
         if (!args.version &&
             match_arg(*slice,
                       (struct StrSliceSpan){
-                          .buf = (struct StrSlice[]){str_slice_new("--help"),
-                                                     str_slice_new("-h")},
+                          .buf = (struct StrSlice[]){str_slice_new("--version"),
+                                                     str_slice_new("-v")},
                           .len = 2})) {
             args.version = true;
         }
@@ -80,7 +83,7 @@ enum RunCliStatus run_cli(struct CliArg t_arg) {
                   "\t   --help | -h: Print this help message\n"
                   "\t   --version | -v: Print program version\n\n"
 
-                  "\tadrtxt  Copyright (C) 2025 Huy Nguyen\n"
+                  "\t" EXE_NAME "  Copyright (C) 2025 Huy Nguyen\n"
                   "\tJust a text editor\n\n"
                   "\tThis program is free software: you can redistribute "
                   "it and/or modify\n"
@@ -89,6 +92,10 @@ enum RunCliStatus run_cli(struct CliArg t_arg) {
                   "\tthe Free Software Foundation, either version 3 of the "
                   "License, or\n"
                   "\t(at your option) any later version.\n");
+        return ALL_WELL;
+    }
+    if (t_arg.version) {
+        debug_log(INFO, EXE_NAME " v" VERSION "\n");
         return ALL_WELL;
     }
     // TODO: configure_file and get a header with versioning and such

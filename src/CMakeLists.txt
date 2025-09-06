@@ -1,6 +1,9 @@
 # ---- library definition ----
 
 find_package(PkgConfig)
+configure_file(info.h.in "${CMAKE_CURRENT_BINARY_DIR}/include/info.h" @ONLY)
+target_include_directories(adrtxt_compile_options INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
 
 target_sources(adrtxt
   PRIVATE
@@ -23,6 +26,7 @@ target_sources(adrtxt_no_main
   util.c
   logs.c
 )
+target_link_libraries(adrtxt_no_main PRIVATE adrtxt_compile_options)
 
 # endif()
 
