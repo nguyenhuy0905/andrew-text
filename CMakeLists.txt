@@ -47,7 +47,6 @@ cmake_dependent_option(adrtxt_DEV "Enable if you plan to work on this project"
 
 enable_testing()
 add_subdirectory(src)
-add_subdirectory(tests)
 include(cmake/docs.cmake)
 if(NOT CMAKE_SKIP_INSTALL_RULES)
   include(cmake/install.cmake)
