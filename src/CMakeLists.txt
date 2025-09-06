@@ -14,7 +14,6 @@ target_link_libraries(adrtxt
   PRIVATE
   adrtxt_compile_options
   adrtxt_no_main
-  ${RAYLIB_LIBRARIES}
 )
 
 add_library(adrtxt_no_main OBJECT)
@@ -23,12 +22,18 @@ target_sources(adrtxt_no_main
   cli.h
   util.h
   logs.h
+  renderer.h
   PRIVATE
   cli.c
   util.c
   logs.c
+  renderer.c
 )
-target_link_libraries(adrtxt_no_main PRIVATE adrtxt_compile_options)
+target_link_libraries(adrtxt_no_main PRIVATE
+  adrtxt_compile_options
+  ${RAYLIB_LIBRARIES}
+  m
+)
 
 # endif()
 

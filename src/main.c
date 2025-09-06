@@ -1,5 +1,6 @@
 #include "cli.h"
 #include "logs.h"
+#include "renderer.h"
 #include <stddef.h>
 #include <stdio.h>
 
@@ -12,6 +13,9 @@ int main(int argc, char *argv[]) {
         return UH_OH;
     }
     auto args = parse_ret.retval.args;
-    run_cli(&args);
-    return ALL_WELL;
+    int status = run_cli(&args);
+    if(status != ALL_WELL) {
+        return status;
+    }
+    render_file(args.input_file.val);
 }

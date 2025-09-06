@@ -25,7 +25,7 @@ enum ParseArgsError: uint8_t {
     INPUT_FILE_ALREADY_PROVIDED,
 };
 
-enum RunCliStatus {
+enum RunCliStatus: int {
     ALL_WELL,
     UH_OH,
 };
