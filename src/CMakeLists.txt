@@ -34,6 +34,7 @@ if(BUILD_TESTING)
   add_executable(adrtxt_lib_test)
   target_sources(adrtxt_lib_test
     PRIVATE
+    test_helper.hpp
     cli.test.cpp
     util.test.cpp
   )

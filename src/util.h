@@ -34,6 +34,24 @@ struct StrSlice str_slice_new(const char *t_p_buf);
  */
 struct StrSlice str_slice_subslice(struct StrSlice t_slice, size_t t_start_idx,
                                    size_t t_end_idx);
+int str_slice_cmp(struct StrSlice t_lhs, struct StrSlice t_rhs);
+struct StrSliceVec {
+    struct StrSlice *buf;
+    size_t len;
+    size_t cap;
+};
+struct StrSliceVecOptional {
+    struct StrSliceVec val;
+    bool has_val;
+};
+/**
+ * Doesn't `has_val` if allocation fails.
+ */
+struct StrSliceVecOptional str_slice_vec_new(size_t t_start_cap);
+bool str_slice_vec_insert(struct StrSliceVec *t_p_slice, size_t t_idx,
+                          struct StrSlice t_val);
+bool str_slice_vec_append(struct StrSliceVec *t_p_slice, struct StrSlice t_val);
+void str_slice_vec_nuke(struct StrSliceVec *t_p_slice);
 
 #ifdef __cplusplus
 } // extern "C"
