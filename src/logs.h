@@ -10,17 +10,10 @@ enum DebugLogType {
     WARN,
 };
 
-#if defined(NDEBUG) && !defined(debug_log)
-#define debug_log(type, msg, ...) 0
-#else
 /**
- * Print stuff when NDEBUG is not defined and return the number of characters
- * printed. Otherwise do nothing and return 0.
- *
- * Also, this should be thread-safe.
+ * This should be thread-safe.
  */
 int debug_log(enum DebugLogType type, const char *fmt, ...);
-#endif
 
 /**
  * \brief This function holds a mutex basically.
