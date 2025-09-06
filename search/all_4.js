@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['licensing_0',['Licensing',['../index.html#license',1,'']]]
+  ['parseargsret_0',['ParseArgsRet',['../structParseArgsRet.html',1,'']]]
 ];

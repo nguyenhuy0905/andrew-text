@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['github_0',['GitHub',['../index.html#gh',1,'']]]
+  ['licensing_0',['Licensing',['../index.html#license',1,'']]]
 ];
