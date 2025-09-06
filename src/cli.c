@@ -19,7 +19,7 @@ static bool match_arg(struct StrSlice, struct StrSliceSpan);
 /**
  * The slice excludes the first dash
  */
-static void update_flag(struct CliArg*, struct StrSlice);
+static void update_flag(struct CliArg *, struct StrSlice);
 
 /**
  * \brief Self-explanatory.
@@ -27,10 +27,12 @@ static void update_flag(struct CliArg*, struct StrSlice);
  * must *not* nuke the vector. This function *owns* that vector.
  */
 struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
-    struct CliArg args = {.help = false, .version = false};
+    struct CliArg args = {
+        .help = false, .version = false, .input_file = {.has_val = false}};
+    struct ParseArgsRet ret = {.retval = {.err = ALLOC_ERR}, .is_successful = false};
     if (t_argc == 1) {
-        return (struct ParseArgsRet){.retval = {.args = args},
-                                     .is_successful = true};
+        ret.retval.err = NO_ARG;
+        goto defer;
     }
 
     assert(t_argc > 1);
@@ -38,8 +40,7 @@ struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
     if (!vec_ret.has_val) {
         debug_log(ERROR, "At %s:%d: array allocation failed, nuking program\n",
                   __FILE__, __LINE__);
-        return (struct ParseArgsRet){.retval = {.err = ALLOC_ERR},
-                                     .is_successful = false};
+        goto defer;
     }
 
     auto vec = vec_ret.val;
@@ -50,19 +51,35 @@ struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
 
     // compare each string to a set of flags
     for (struct StrSlice *slice = vec.buf; slice < vec.buf + vec.len; ++slice) {
-        if(str_slice_cmp(str_slice_subslice(*slice, 0, 1), str_slice_new("-")) == 0) {
+        if (str_slice_cmp(str_slice_subslice(*slice, 0, 1),
+                          str_slice_new("-")) == 0) {
             update_flag(&args, *slice);
+            continue;
         }
+        // assume this is input file
+        if (args.input_file.has_val) {
+            debug_log(ERROR,
+                      "Input file already provided.\n"
+                      "\t    Already got input file %s\n"
+                      "\t    Got extra argument %s\n",
+                      args.input_file.val.buf, slice->buf);
+            ret.retval.err = INPUT_FILE_ALREADY_PROVIDED;
+            goto defer;
+        }
+        args.input_file.has_val = true;
+        args.input_file.val = *slice;
     }
 
+    ret.retval.args = args;
+    ret.is_successful = true;
+defer:
     str_slice_vec_nuke(&vec);
-    return (struct ParseArgsRet){.retval = {.args = args},
-                                 .is_successful = true};
+    return ret;
 }
 
-enum RunCliStatus run_cli(struct CliArg t_arg) {
+enum RunCliStatus run_cli(const struct CliArg* t_arg) {
     // help takes precedence over everything else
-    if (t_arg.help) {
+    if (t_arg->help) {
         // TODO: later on, when we have too many options, refactor this into:
         //   - Each sub-command has its own help section.
         //   - The main `--help` just lists all the available subcommands.
@@ -86,11 +103,12 @@ enum RunCliStatus run_cli(struct CliArg t_arg) {
         return ALL_WELL;
     }
     // then version, also taking precedence over anything else
-    if (t_arg.version) {
+    if (t_arg->version) {
         debug_log(INFO, EXE_NAME " v" VERSION "\n");
         return ALL_WELL;
     }
-    // TODO: configure_file and get a header with versioning and such
+    assert(t_arg->input_file.has_val);
+    debug_log(INFO, "Editing file %s\n", t_arg->input_file.val.buf);
     return ALL_WELL;
 }
 
@@ -104,20 +122,19 @@ static bool match_arg(struct StrSlice t_slice, struct StrSliceSpan t_args) {
     return false;
 }
 
-static void update_flag(struct CliArg* t_p_args, struct StrSlice t_slice) {
-        if (match_arg(t_slice,
-                      (struct StrSliceSpan){
-                          .buf = (struct StrSlice[]){str_slice_new("-help"),
-                                                     str_slice_new("h")},
-                          .len = 2})) {
-            t_p_args->help = true;
-        }
-        if (match_arg(t_slice,
-                      (struct StrSliceSpan){
-                          .buf = (struct StrSlice[]){str_slice_new("-version"),
-                                                     str_slice_new("v")},
-                          .len = 2})) {
-            t_p_args->version = true;
-        }
-
+static void update_flag(struct CliArg *t_p_args, struct StrSlice t_slice) {
+    if (match_arg(t_slice,
+                  (struct StrSliceSpan){
+                      .buf = (struct StrSlice[]){str_slice_new("-help"),
+                                                 str_slice_new("h")},
+                      .len = 2})) {
+        t_p_args->help = true;
+    }
+    if (match_arg(t_slice,
+                  (struct StrSliceSpan){
+                      .buf = (struct StrSlice[]){str_slice_new("-version"),
+                                                 str_slice_new("v")},
+                      .len = 2})) {
+        t_p_args->version = true;
+    }
 }

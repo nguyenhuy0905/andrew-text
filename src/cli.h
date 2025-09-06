@@ -4,6 +4,8 @@
 extern "C" {
 #endif // __cplusplus
 
+#include "util.h"
+#include <stdint.h>
 /**
  * @brief Command-line arguments
  */
@@ -12,11 +14,15 @@ struct CliArg {
     bool help;
     // --version
     bool version;
+    // [input file]
+    struct StrSliceOptional input_file;
 };
 
-enum ParseArgsError {
+enum ParseArgsError: uint8_t {
+    NO_ARG = 1,
     NO_SUCH_ARG,
     ALLOC_ERR,
+    INPUT_FILE_ALREADY_PROVIDED,
 };
 
 enum RunCliStatus {
@@ -33,7 +39,7 @@ struct ParseArgsRet {
 };
 
 struct ParseArgsRet parse_args(int t_argc, char **t_p_argv);
-enum RunCliStatus run_cli(struct CliArg t_arg);
+enum RunCliStatus run_cli(const struct CliArg* t_arg);
 
 #ifdef __cplusplus
 }

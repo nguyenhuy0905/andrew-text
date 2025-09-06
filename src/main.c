@@ -12,6 +12,6 @@ int main(int argc, char *argv[]) {
         return UH_OH;
     }
     auto args = parse_ret.retval.args;
-    run_cli(args);
+    run_cli(&args);
     return ALL_WELL;
 }

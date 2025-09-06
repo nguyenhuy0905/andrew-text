@@ -16,6 +16,10 @@ struct StrSlice {
     const char *buf;
     size_t len;
 };
+struct StrSliceOptional {
+    struct StrSlice val;
+    bool has_val;
+};
 
 /**
  * \brief Creates a new \c{StrSlice} from the supplied buffer.

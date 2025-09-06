@@ -23,5 +23,6 @@
   - [x] version
     - [x] `configure_file` with CMake to get the version.
   - [x] Extract dealing with flags out.
-  - [ ] Input file
+  - [x] Input file
     - Should be the first non-flag item.
+    - [x] If provided more than 1 input file, throw a tantrum.
