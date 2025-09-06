@@ -1,6 +1,7 @@
 # ---- library definition ----
 
 find_package(PkgConfig)
+pkg_check_modules(RAYLIB REQUIRED raylib)
 configure_file(info.h.in "${CMAKE_CURRENT_BINARY_DIR}/include/info.h" @ONLY)
 target_include_directories(adrtxt_compile_options INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
@@ -13,6 +14,7 @@ target_link_libraries(adrtxt
   PRIVATE
   adrtxt_compile_options
   adrtxt_no_main
+  ${RAYLIB_LIBRARIES}
 )
 
 add_library(adrtxt_no_main OBJECT)
