@@ -56,6 +56,19 @@ bool str_slice_vec_insert(struct StrSliceVec *t_p_slice, size_t t_idx,
 bool str_slice_vec_append(struct StrSliceVec *t_p_slice, struct StrSlice t_val);
 void str_slice_vec_nuke(struct StrSliceVec *t_p_slice);
 
+/**
+ * \brief Copium `std::span<StrSlice>`
+ */
+struct StrSliceSpan {
+    struct StrSlice *const buf;
+    size_t len;
+};
+/**
+ * Does nothing special. You can create with aggregate initialization fine.
+ */
+struct StrSliceSpan str_slice_view_new(struct StrSlice *const t_p_buf,
+                                       size_t len);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
