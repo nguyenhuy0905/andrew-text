@@ -16,6 +16,12 @@ struct CliArg {
 
 enum ParseArgsError {
     NO_SUCH_ARG,
+    ALLOC_ERR,
+};
+
+enum RunCliStatus {
+    ALL_WELL,
+    UH_OH,
 };
 
 struct ParseArgsRet {
@@ -27,6 +33,7 @@ struct ParseArgsRet {
 };
 
 struct ParseArgsRet parse_args(int t_argc, char **t_p_argv);
+enum RunCliStatus run_cli(struct CliArg t_arg);
 
 #ifdef __cplusplus
 }
