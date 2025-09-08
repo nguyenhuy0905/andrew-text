@@ -20,6 +20,8 @@ int debug_log(enum DebugLogType type, const char *fmt, ...) {
     case WARN:
         printf("\033[93;1m[WARN]\033[0m: ");
         break;
+    case HINT:
+        printf("\033[35;1m[HINT]\033[0m: ");
     }
     auto ret = vprintf(fmt, va);
     pthread_mutex_unlock(&print_mtx);

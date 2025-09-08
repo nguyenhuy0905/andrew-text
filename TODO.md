@@ -26,3 +26,7 @@
   - [x] Input file
     - Should be the first non-flag item.
     - [x] If provided more than 1 input file, throw a tantrum.
+    - If we have an input file, run it.
+
+- [ ] Rendering the file
+  - [x] At least get raylib to render something first.

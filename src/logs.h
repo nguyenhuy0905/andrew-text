@@ -8,6 +8,7 @@ enum DebugLogType {
     INFO,
     ERROR,
     WARN,
+    HINT,
 };
 
 /**

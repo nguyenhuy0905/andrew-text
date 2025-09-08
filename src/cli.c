@@ -29,8 +29,11 @@ static void update_flag(struct CliArg *, struct StrSlice);
 struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
     struct CliArg args = {
         .help = false, .version = false, .input_file = {.has_val = false}};
-    struct ParseArgsRet ret = {.retval = {.err = ALLOC_ERR}, .is_successful = false};
+    struct ParseArgsRet ret = {.retval = {.err = ALLOC_ERR},
+                               .is_successful = false};
     if (t_argc == 1) {
+        debug_log(ERROR, "No argument provided\n");
+        debug_log(HINT, "At least provide the file name please\n");
         ret.retval.err = NO_ARG;
         goto defer;
     }
@@ -70,6 +73,11 @@ struct ParseArgsRet parse_args(int t_argc, char **t_p_argv) {
         args.input_file.val = *slice;
     }
 
+    if (!args.input_file.has_val) {
+        debug_log(ERROR, "No input file\n");
+        goto defer;
+    }
+
     ret.retval.args = args;
     ret.is_successful = true;
 defer:
@@ -77,7 +85,7 @@ defer:
     return ret;
 }
 
-enum RunCliStatus run_cli(const struct CliArg* t_arg) {
+enum RunCliStatus run_cli(const struct CliArg *t_arg) {
     // help takes precedence over everything else
     if (t_arg->help) {
         // TODO: later on, when we have too many options, refactor this into:
