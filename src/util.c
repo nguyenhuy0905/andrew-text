@@ -19,11 +19,33 @@ struct StrSlice str_slice_new(const char *t_p_buf) {
     return (struct StrSlice){.buf = t_p_buf, .len = strlen(t_p_buf)};
 }
 
+static size_t closest_power_two(size_t t_num) {
+    size_t ret = 1;
+    while (t_num > ret) {
+        ret <<= 1;
+    }
+    return ret;
+}
+
+struct StrSliceVecOptional
+str_slice_vec_from_buf(size_t t_len, struct StrSlice t_p_slices[t_len]) {
+    size_t malloc_len = closest_power_two(t_len);
+    struct StrSlice *new_buf = malloc(sizeof(struct StrSlice) * malloc_len);
+    if (new_buf == nullptr) {
+        return (struct StrSliceVecOptional){.has_val = false};
+    }
+    memcpy(new_buf, t_p_slices, t_len);
+    return (struct StrSliceVecOptional){
+        .val = {.buf = new_buf, .len = t_len, .cap = malloc_len},
+        .has_val = true};
+}
+
 struct StrSlice str_slice_subslice(struct StrSlice t_slice, size_t t_start_idx,
                                    size_t t_end_idx) {
     size_t new_len = 0;
     if (t_start_idx < t_slice.len && t_end_idx > t_start_idx) {
-        size_t actual_end = (t_slice.len >= t_end_idx) ? t_end_idx : t_slice.len;
+        size_t actual_end =
+            (t_slice.len >= t_end_idx) ? t_end_idx : t_slice.len;
         assert(actual_end > t_start_idx);
         new_len = (size_t)(actual_end - t_start_idx);
     }

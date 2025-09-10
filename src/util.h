@@ -55,6 +55,13 @@ struct StrSliceVecOptional {
  * Doesn't `has_val` if allocation fails.
  */
 struct StrSliceVecOptional str_slice_vec_new(size_t t_start_cap);
+// i dunno why C++ doesn't support this pretty syntax
+#ifndef __cplusplus
+struct StrSliceVecOptional
+str_slice_vec_from_buf(size_t t_len, struct StrSlice t_p_slices[t_len]);
+#else
+StrSliceVecOptional str_slice_vec_from_buf(size_t t_len, StrSlice* t_p_slices);
+#endif
 bool str_slice_vec_insert(struct StrSliceVec *t_p_slice, size_t t_idx,
                           struct StrSlice t_val);
 bool str_slice_vec_append(struct StrSliceVec *t_p_slice, struct StrSlice t_val);

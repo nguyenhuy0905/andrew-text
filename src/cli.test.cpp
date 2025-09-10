@@ -1,5 +1,6 @@
 #include "cli.h"
 #include "logs.h"
+#include "util.h"
 #include <gtest/gtest.h>
 
 TEST(Placeholder, Test) { ASSERT_EQ(1, 0 + 2 - 1); }

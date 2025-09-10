@@ -83,12 +83,24 @@ TEST(StrSlice, Subslice) {
 }
 
 TEST(StrSliceVec, Init) {
-    auto vec_ret = str_slice_vec_new(4);
-    if (vec_ret.has_val) {
+    {
+        auto vec_ret = str_slice_vec_new(4);
+        ASSERT_TRUE(vec_ret.has_val);
         auto vec = vec_ret.val;
         helper::Cleanup c{[&]() { str_slice_vec_nuke(&vec); }};
         EXPECT_EQ(vec.cap, 4);
         EXPECT_EQ(vec.len, 0);
+    }
+    {
+        StrSlice str_slices[]{str_slice_new("hello"), str_slice_new("goodbye"),
+                              str_slice_new("wtf"), str_slice_new("hello???"),
+                              str_slice_new("ehehe")};
+        auto vec_ret = str_slice_vec_from_buf(5, str_slices);
+        ASSERT_TRUE(vec_ret.has_val);
+        auto vec = vec_ret.val;
+        helper::Cleanup c{[&]() { str_slice_vec_nuke(&vec); }};
+        EXPECT_EQ(vec.cap, 8);
+        EXPECT_EQ(vec.len, 5);
     }
 }
 
